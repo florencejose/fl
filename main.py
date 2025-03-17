@@ -57,7 +57,7 @@ def get_mx_record(domain):
     except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
         return "No MX Record Found"
 
-app = Flask(_name_)
+app = Flask(__name__)
 limiter = Limiter(get_remote_address, app=app, default_limits=["6 per day", "6 per hour"])
 secret_keyx = secrets.token_urlsafe(24)
 app.secret_key = secret_keyx
